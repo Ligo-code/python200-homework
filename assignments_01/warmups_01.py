@@ -274,3 +274,64 @@ print("Data2 mean:", np.mean(data2), "median:", np.median(data2), "mode:", mode(
 
 # data2 mean is skewed by the outlier 150 — it pulls the average up to 40,
 # while the median stays at 12, which better represents the typical value
+
+
+# =============================================================================
+# --- Hypothesis Testing ---
+# =============================================================================
+
+# Hypothesis Q1
+# ttest_ind tests whether two independent groups have the same mean
+# A negative t-statistic means group_a mean is lower than group_b mean
+print("\n=== Hypothesis Q1 ===")
+group_a = [72, 68, 75, 70, 69, 73, 71, 74]
+group_b = [80, 85, 78, 83, 82, 86, 79, 84]
+
+t_stat, p_val = stats.ttest_ind(group_a, group_b)
+print(f"t-statistic: {t_stat:.4f}")
+print(f"p-value:     {p_val:.4f}")
+
+# Hypothesis Q2
+# alpha = 0.05 is the standard significance threshold:
+# if p < 0.05 we say the result is statistically significant (less than 5% chance it's random)
+print("\n=== Hypothesis Q2 ===")
+if p_val < 0.05:
+    print("Result is statistically significant (p < 0.05)")
+else:
+    print("Result is not statistically significant (p >= 0.05)")
+
+# Hypothesis Q3
+# ttest_rel is for paired data — the same subjects measured twice (before/after)
+# unlike ttest_ind which assumes the two groups are independent
+print("\n=== Hypothesis Q3 ===")
+before = [60, 65, 70, 58, 62, 67, 63, 66]
+after  = [68, 70, 76, 65, 69, 72, 70, 71]
+
+t_stat3, p_val3 = stats.ttest_rel(before, after)
+print(f"Paired t-statistic: {t_stat3:.4f}")
+print(f"p-value:            {p_val3:.4f}")
+
+# Hypothesis Q4
+# ttest_1samp tests whether a sample mean differs from a known reference value (popmean)
+print("\n=== Hypothesis Q4 ===")
+scores = [72, 68, 75, 70, 69, 74, 71, 73]
+t_stat4, p_val4 = stats.ttest_1samp(scores, 70)
+print(f"One-sample t-statistic: {t_stat4:.4f}")
+print(f"p-value:                {p_val4:.4f}")
+
+# Hypothesis Q5
+# alternative='less' tests the one-sided hypothesis: group_a mean < group_b mean
+# this gives a smaller p-value than the two-sided test when the direction is correct
+print("\n=== Hypothesis Q5 ===")
+one_tail_p = stats.ttest_ind(group_a, group_b, alternative='less').pvalue
+print(f"One-tailed p-value (group_a < group_b): {one_tail_p:.4f}")
+
+# Hypothesis Q6
+# Plain-language conclusion for Q1: mention direction and whether it's due to chance
+print("\n=== Hypothesis Q6 ===")
+print(
+    f"Group B scores (mean={np.mean(group_b):.1f}) were significantly higher than "
+    f"Group A scores (mean={np.mean(group_a):.1f}). "
+    f"The p-value of {p_val:.4f} is below 0.05, meaning this difference is very "
+    f"unlikely to be due to chance."
+)
