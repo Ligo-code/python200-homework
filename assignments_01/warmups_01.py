@@ -6,6 +6,7 @@ from scipy.stats import pearsonr
 import seaborn as sns
 from statistics import mode
 
+
 # =============================================================================
 # --- Pandas ---
 # =============================================================================
@@ -443,3 +444,4 @@ result = data_pipeline(arr)
 print("Pipeline results:")
 for k, v in result.items():
     print(f"  {k}: {v}")
+
