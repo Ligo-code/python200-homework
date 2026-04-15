@@ -208,6 +208,72 @@ print(f"Plot saved: {os.path.join(OUTPUT_DIR, 'correlation_matrix.png')}")
 # Medu and Fedu show moderate positive correlation with each other --
 # parents from similar educational backgrounds. goout and Walc also
 # correlate (going out and drinking tend to go together).
-# A few high-absence students still score well (perhaps very capable),
-# while some low-absence students score poorly (other factors at play).
-# This is why absences alone is a weak predictor after filtering G3=0.
+
+# =============================================================================
+# Task 4: Baseline Model
+# =============================================================================
+
+print("\n=== Task 4: Baseline Model (failures only) ===")
+
+# The simplest possible model: one feature, no tuning.
+# This gives us a floor to beat -- any more complex model should do better.
+X_base = df_clean[["failures"]].values
+y      = df_clean["G3"].values
+
+X_train_b, X_test_b, y_train_b, y_test_b = train_test_split(
+    X_base, y, test_size=0.2, random_state=42
+)
+
+model_base = LinearRegression()
+model_base.fit(X_train_b, y_train_b)
+
+y_pred_b   = model_base.predict(X_test_b)
+rmse_base  = np.sqrt(np.mean((y_pred_b - y_test_b) ** 2))
+r2_base    = model_base.score(X_test_b, y_test_b)
+
+print(f"Slope (failures coef): {model_base.coef_[0]:.4f}")
+print(f"Intercept:             {model_base.intercept_:.4f}")
+print(f"RMSE:                  {rmse_base:.4f}")
+print(f"R2 (test):             {r2_base:.4f}")
+# The slope is negative (~-1.5 to -2): each additional past failure is
+# associated with roughly 1.5-2 points lower on the 0-20 scale.
+# RMSE ~3+ means typical predictions are off by 3 grade points on a 0-20
+# scale -- not great, but this is a single-feature model.
+# R2 ~0.08 means failures alone explains only ~8% of the variance in G3.
+# This is only slightly better than predicting the mean, so failures
+# captures a real but limited signal and is far from sufficient on its own.
+# we saw in EDA (-0.29), but far from enough for a useful model.
+# The wide spread of predictions shows that many students with the same
+# number of failures still achieve very different grades, indicating that
+# other factors (study habits, motivation, support) play a major role.
+
+# Compare against the dumbest possible baseline: always predict the mean.
+# If our model can't beat this, it's useless.
+y_mean     = np.mean(y_train_b)
+rmse_mean  = np.sqrt(np.mean((y_mean - y_test_b) ** 2))
+print(f"RMSE (predict mean): {rmse_mean:.4f}")
+print(f"RMSE (failures):     {rmse_base:.4f}")
+# Our model beats the mean-only baseline, but not by much --
+# a sign that failures alone captures a real but weak signal.
+
+plt.figure()
+plt.scatter(X_test_b, y_test_b, alpha=0.7, label="Actual", s=40)
+plt.scatter(X_test_b, y_pred_b, alpha=0.7, label="Predicted", marker="x", s=60)
+plt.title("Baseline Model: Failures vs G3")
+plt.xlabel("Failures")
+plt.ylabel("G3")
+plt.legend()
+plt.tight_layout()
+plt.savefig(os.path.join(OUTPUT_DIR, "baseline_failures.png"))
+plt.close()
+print(f"Plot saved: {os.path.join(OUTPUT_DIR, 'baseline_failures.png')}")
+# The model collapses each failure count to a single predicted value
+# (it's a line), while actual grades spread widely at each level.
+# This "flattening" reveals how much variance failures alone cannot explain.
+'''
+The model captures the overall negative trend between failures and grades, 
+but it fails to explain the large variation within each group. 
+Students with the same number of failures can have very different outcomes, 
+which shows that additional features are needed for a useful model.
+'''
+
