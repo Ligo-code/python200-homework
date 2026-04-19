@@ -90,3 +90,21 @@ print("KNN (unscaled data) accuracy:", accuracy_score(y_test, y_pred))
 
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
+
+# Q2: Train KNN on scaled data
+
+# Create a new KNN model
+knn_scaled = KNeighborsClassifier(n_neighbors=5)
+
+# Fit on scaled training data
+knn_scaled.fit(X_train_scaled, y_train)
+
+# Predict on scaled test data
+y_pred_scaled = knn_scaled.predict(X_test_scaled)
+
+# Evaluate accuracy
+print("\nKNN (scaled data) accuracy:", accuracy_score(y_test, y_pred_scaled))
+
+# In this case, scaling does not significantly change performance because the Iris dataset
+# is already well-behaved and features are on similar scales. However, in general, KNN
+# benefits from scaling because it relies on distance calculations.
