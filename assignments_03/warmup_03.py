@@ -221,3 +221,30 @@ for C in C_values:
 # As C increases, the total coefficient magnitude usually increases.
 # This shows that weaker regularization allows the model to use larger weights.
 # Smaller C applies stronger regularization and keeps coefficients smaller.
+
+# --- PCA ---
+# Load the handwritten digits dataset for PCA experiments.
+digits = load_digits()
+X_digits = digits.data      # Shape: (1797, 64), each image flattened into 64 features
+y_digits = digits.target    # Digit labels: 0 through 9
+images = digits.images      # Same images in 8x8 matrix form for plotting
+
+# Q1: Print dataset shapes
+print("\nX_digits shape:", X_digits.shape)
+print("images shape:", images.shape)
+
+# Create one example image for each digit class (0-9)
+fig, axes = plt.subplots(1, 10, figsize=(15, 3))
+
+for digit in range(10):
+    # Find the first index where the target label matches the digit
+    first_index = np.where(y_digits == digit)[0][0]
+
+    # Display the corresponding 8x8 image
+    axes[digit].imshow(images[first_index], cmap="gray_r")
+    axes[digit].set_title(str(digit))
+    axes[digit].axis("off")
+
+plt.tight_layout()
+plt.savefig("outputs/sample_digits.png")
+plt.show()
