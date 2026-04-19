@@ -248,3 +248,38 @@ for digit in range(10):
 plt.tight_layout()
 plt.savefig("outputs/sample_digits.png")
 plt.show()
+
+# Q2: PCA 2D projection
+
+# Create PCA object (no limit on number of components)
+pca = PCA()
+
+# Fit PCA on the digits data
+pca.fit(X_digits)
+
+# Transform the data into principal component space
+scores = pca.transform(X_digits)
+
+# Plot first two principal components
+plt.figure(figsize=(8, 6))
+
+scatter = plt.scatter(
+    scores[:, 0], 
+    scores[:, 1], 
+    c=y_digits, 
+    cmap="tab10", 
+    s=10
+)
+
+plt.colorbar(scatter, label="Digit")
+plt.title("PCA 2D Projection of Digits Dataset")
+
+plt.savefig("outputs/pca_2d_projection.png")
+plt.show()
+
+# In the PCA projection, samples with the same digit label often form clusters,
+# indicating that PCA captures meaningful structure in the data.
+# Samples with the same digit label tend to cluster together,
+# although there is some overlap between classes.
+# This indicates that PCA captures meaningful structure,
+# but 2 components are not enough for perfect separation.
