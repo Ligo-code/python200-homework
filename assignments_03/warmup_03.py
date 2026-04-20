@@ -309,3 +309,37 @@ plt.show()
 # Approximately 12–13 components are needed to explain around 80% of the variance.
 # This shows that we can significantly reduce dimensionality from 64 to about 12
 # while retaining most of the information.
+
+def reconstruct_digit(sample_idx, scores, pca, n_components):
+    """Reconstruct one digit using the first n_components principal components."""
+    reconstruction = pca.mean_.copy()
+    for i in range(n_components):
+        reconstruction = reconstruction + scores[sample_idx, i] * pca.components_[i]
+    return reconstruction.reshape(8, 8)
+
+# Q4: PCA Reconstruction
+
+n_values = [2, 5, 15, 40]
+
+fig, axes = plt.subplots(len(n_values) + 1, 5, figsize=(10, 8))
+
+# Original images (first row)
+for i in range(5):
+    axes[0, i].imshow(images[i], cmap="gray_r")
+    axes[0, i].set_title("Original")
+    axes[0, i].axis("off")
+
+# Reconstructed images
+for row_idx, n in enumerate(n_values):
+    for col_idx in range(5):
+        reconstructed = reconstruct_digit(col_idx, scores, pca, n)
+        axes[row_idx + 1, col_idx].imshow(reconstructed, cmap="gray_r")
+        axes[row_idx + 1, col_idx].set_title(f"n={n}")
+        axes[row_idx + 1, col_idx].axis("off")
+
+plt.tight_layout()
+plt.savefig("outputs/pca_reconstructions.png")
+plt.show()
+
+# As the number of components increases, the reconstructed images become clearer.
+# Around 15 components, digits become recognizable, which aligns with the explained variance curve.
