@@ -82,7 +82,7 @@ print(classification_report(y_test, y_pred_baseline))
 # --- Task 3: KNN Classification ---
 
 # Train KNN model
-knn = KNeighborsClassifier(n_neighbors=5)
+knn = KNeighborsClassifier(n_neighbors=5)  # Using K=5 as a common default choice
 knn.fit(X_train, y_train)
 
 # Predict
@@ -97,3 +97,32 @@ print(classification_report(y_test, y_pred_knn))
 # KNN significantly improves performance compared to the baseline.
 # It is able to detect spam emails with a recall of around 71%.
 # However, some spam emails are still missed, indicating room for improvement.
+
+# --- Task 4: KNN with Scaling ---
+
+# Scaling is important for KNN because it relies on distance calculations.
+# Features with larger ranges can dominate the distance if not scaled.
+
+scaler = StandardScaler()
+
+# Fit only on training data
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train KNN again
+knn_scaled = KNeighborsClassifier(n_neighbors=5)  # Using the same K value for consistency
+knn_scaled.fit(X_train_scaled, y_train)
+
+# Predict
+y_pred_knn_scaled = knn_scaled.predict(X_test_scaled)
+
+# Evaluate
+print("\nKNN (Scaled) Accuracy:", accuracy_score(y_test, y_pred_knn_scaled))
+
+print("\nKNN (Scaled) Classification Report:")
+print(classification_report(y_test, y_pred_knn_scaled))
+
+# Applying feature scaling significantly improved KNN performance.
+# The model now detects spam emails more effectively (recall ~84%)
+# while maintaining high precision (~90%).
+# This confirms that scaling is important for distance-based models like KNN.
