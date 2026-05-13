@@ -332,16 +332,19 @@ who are already frustrated. Use with intention.
 
 # System Q2
 
+# messages=[
+#         {"role": "user", "content": "What is my name?"}
+#     ]
+
+# System Q2 - I don't know your name.
+
+
 messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "My name is Jordan and I'm learning Python."},
     {"role": "assistant", "content": "Nice to meet you, Jordan! Python is a great choice. What would you like to work on?"},
     {"role": "user", "content": "Can you remind me what my name is?"}
 ]
-
-messages=[
-        {"role": "user", "content": "What is my name?"}
-    ]
 
 response = client.chat.completions.create(
     model="gpt-4o-mini",
